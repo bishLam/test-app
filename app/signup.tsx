@@ -68,11 +68,14 @@ const styles = StyleSheet.create(
   {
     mainView: {
       backgroundColor: "green",
+      alignItems:"center",
+      justifyContent:"center",
+      flex:1
     },
 
 
     container: {
-      backgroundColor: "green"
+      backgroundColor: "green",
     },
 
     input: {

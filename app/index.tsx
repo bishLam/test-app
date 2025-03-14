@@ -3,18 +3,29 @@ import { Text, View, TextInput, StyleSheet, TouchableOpacity } from 'react-nativ
 import { Link } from 'expo-router'
 import { blue } from 'react-native-reanimated/lib/typescript/Colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useUser } from '../contexts/UserContext';
+import { useState } from 'react'
 
 
-export default function Login() {
+export default function Login({...props}) {
+  const [form, setForm] = useState({
+    email : "",
+    password : ""}
+  )
+
+  const handlePress = async() => {
+    console.log(form.email)
+  }
+
   return (
     <SafeAreaView style={styles.mainView}>
       <View style={styles.container}>
         <Text style={styles.headingText}> Sign in to your account</Text>
         <FormLabel color="darkblue" bg="white" text="Email" fontSize="22" />
-        <TextInput style={styles.input} />
+        <TextInput  onChangeText= {(e) => {setForm({...form, email:e})}} style={styles.input} />
         <FormLabel color="darkblue" bg="white" text="Password" fontSize="22" />
         <TextInput style={styles.input} />
-        <TouchableOpacity style={styles.logInButton}>
+        <TouchableOpacity style={styles.logInButton} onPress={handlePress}>
           <Text style={styles.buttonText}>Log in</Text>
         </TouchableOpacity>
         <Text style = {styles.toSignupText}> 
@@ -29,12 +40,14 @@ const styles = StyleSheet.create(
   {
     mainView: {
       backgroundColor: "green",
-      height: "auto"
+      alignItems:"center",
+      justifyContent:"center",
+      flex:1
     },
 
 
     container: {
-      backgroundColor: "green"
+      backgroundColor: "green",
     },
 
     input: {
