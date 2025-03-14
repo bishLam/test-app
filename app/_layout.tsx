@@ -3,21 +3,18 @@ import { useFonts } from 'expo-font';
 import { Link, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import 'react-native-reanimated';
 import { Client, Account, ID } from 'react-native-appwrite';
 import { useColorScheme } from '@/hooks/useColorScheme';
+
+import { useUser } from '../contexts/UserContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-
-  //initialise Appwrite client
-  const client = new Client()
-  .setProject('67c0ec26003c3a15d2b0')
-  .setPlatform('au.edu.ait.testapp');
-
+  // const user = useContext(useUser())
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -35,15 +32,13 @@ export default function RootLayout() {
   }
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={
-        {
-          headerShown: false
-        }
-      } >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-        
-      </Stack>
+      {/* <UserContext.Provider value = {UserContext}> */}
+        <Stack screenOptions={
+          {
+            headerShown: false
+          }
+        } />
+      {/* </UserContext.Provider> */}
       <StatusBar style="auto" />
     </ThemeProvider>
   );
