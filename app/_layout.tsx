@@ -8,13 +8,13 @@ import 'react-native-reanimated';
 import { Client, Account, ID } from 'react-native-appwrite';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
-import { useUser } from '../contexts/UserContext';
+import { UserProvider } from '../contexts/UserContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  // const user = useContext(useUser())
+
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -32,13 +32,13 @@ export default function RootLayout() {
   }
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {/* <UserContext.Provider value = {UserContext}> */}
+      <UserProvider>
         <Stack screenOptions={
           {
             headerShown: false
           }
         } />
-      {/* </UserContext.Provider> */}
+      </UserProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
   );

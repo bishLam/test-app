@@ -5,31 +5,51 @@ import { blue } from 'react-native-reanimated/lib/typescript/Colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useUser } from '../contexts/UserContext';
 import { useState } from 'react'
+import { toast } from '@/lib/toast'
 
 
-export default function Login({...props}) {
+export default function Login({ ...props }) {
+  const user = useUser();
   const [form, setForm] = useState({
-    email : "",
-    password : ""}
+    email: "",
+    password: ""
+  }
   )
 
-  const handlePress = async() => {
-    console.log(form.email)
+  const handlePress = async () => {
+    if(form.email.trim() == "" || form.password.trim() == ""){
+      toast("Please fill in all the fields")
+      return
+    }
+
+    const isValidEmail = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(form.email);
+    
+    
+    try {
+      await user?.login(form.email, form.password)
+      setForm({
+        email: "",
+        password: ""
+    })
+    }
+    catch (error) {
+      toast(`${error}`)
+    }
   }
 
   return (
     <SafeAreaView style={styles.mainView}>
       <View style={styles.container}>
         <Text style={styles.headingText}> Sign in to your account</Text>
-        <FormLabel color="darkblue" bg="white" text="Email" fontSize="22" />
-        <TextInput  onChangeText= {(e) => {setForm({...form, email:e})}} style={styles.input} />
-        <FormLabel color="darkblue" bg="white" text="Password" fontSize="22" />
-        <TextInput style={styles.input} />
+        <FormLabel color="darkblue" bg="white" text="Email" />
+        <TextInput onChangeText={(e) => { setForm({ ...form, email: e }) }} style={styles.input} />
+        <FormLabel color="darkblue" bg="white" text="Password" />
+        <TextInput style={styles.input} onChangeText={(e) => {setForm({...form, password:e})}} />
         <TouchableOpacity style={styles.logInButton} onPress={handlePress}>
           <Text style={styles.buttonText}>Log in</Text>
         </TouchableOpacity>
-        <Text style = {styles.toSignupText}> 
-          <Link href='/signup' style = {styles.link}> Don't have an account ? Sign up Instead </Link>
+        <Text style={styles.toSignupText}>
+          <Link href='/signup' style={styles.link}> Don't have an account ? Sign up Instead </Link>
         </Text>
       </View>
     </SafeAreaView>
@@ -40,9 +60,9 @@ const styles = StyleSheet.create(
   {
     mainView: {
       backgroundColor: "green",
-      alignItems:"center",
-      justifyContent:"center",
-      flex:1
+      alignItems: "center",
+      justifyContent: "center",
+      flex: 1
     },
 
 
@@ -92,7 +112,7 @@ const styles = StyleSheet.create(
       textDecorationLine: "underline"
     },
 
-    link : {
+    link: {
       color: "white"
     }
 

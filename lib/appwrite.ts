@@ -1,14 +1,14 @@
 import { Client, Databases, Account } from "react-native-appwrite";
 
-const config = () => {
-    endpoint = "https://cloud.appwrite.io/v1"
-    projectID = "67c0ec26003c3a15d2b0";
-    platform = "au.com.testapp"
+export const config =  {
+    endpoint: "https://cloud.appwrite.io/v1",
+    projectID: "67c0ec26003c3a15d2b0",
+    platform: "au.com.testapp"
 }
 
 const client = new Client();
 client
-  .setEndpoint(config.setEndpoint)
+  .setEndpoint(config.endpoint)
   .setProject(config.projectID) 
   .setPlatform(config.platform);
 

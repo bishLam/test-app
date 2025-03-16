@@ -1,4 +1,6 @@
 import { FormLabel } from '@/components/FormLabel'
+import { useUser } from '@/contexts/UserContext'
+import { toast } from '@/lib/toast'
 import { Link } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Text, View, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
@@ -7,6 +9,7 @@ import { blue } from 'react-native-reanimated/lib/typescript/Colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const SignUp = () => {
+  const userAuth = useUser();
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -14,17 +17,35 @@ const SignUp = () => {
   const [validPassword, setValidPassword] = useState(false)
   const [message, setMessage] = useState("")
 
-  const handleButtonPress = () => {
-    if(password == repeatPassword){
-      if(password.length >= 8){
-        setMessage("Good job")
-      }
-      else{
-        setMessage("Password should at least be 8 characters")
-      }
+  const handleButtonPress = async () => {
+
+    if(email.trim() == "" || password.trim() == ""){
+      setMessage("Please fill in the required fields")
+      return
     }
-    else{
+    
+    const isValidEmail = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(email);
+    if(!isValidEmail){
+      setMessage("Email is not valid")
+      return
+    }
+
+    if(password.length < 6){
+      setMessage("Password should be at least 6 characters")
+      return
+    }
+
+    if(password != repeatPassword){
       setMessage("Passwords do not match")
+      return
+    }
+
+    setMessage("")
+    try{
+      await userAuth?.register(email, password)
+    }
+    catch(error){
+      toast(`${error}`)
     }
   }
 
@@ -32,24 +53,24 @@ const SignUp = () => {
     <SafeAreaView style={styles.mainView}>
       <View style={styles.container}>
         <Text style={styles.headingText}> Create an account </Text>
-        <FormLabel color="darkblue" bg="white" text="Email" fontSize="22" />
-        <TextInput style={styles.input} 
+        <FormLabel color="darkblue" bg="white" text="Email" />
+        <TextInput style={styles.input}
           value={email}
           onChangeText={(val) => setEmail(val)}
 
         />
 
-        <FormLabel color="darkblue" bg="white" text="Password" fontSize="22" />
-        <TextInput style={styles.input} 
-        value={password}
-        onChangeText={(val) => setPassword(val)}
-        />
-        <FormLabel color="darkblue" bg="white" text="Repeat Password" fontSize="22" />
+        <FormLabel color="darkblue" bg="white" text="Password" />
         <TextInput style={styles.input}
-        value={repeatPassword}
-        onChangeText={(val) => setRepeatPassword(val)}
+          value={password}
+          onChangeText={(val) => setPassword(val)}
         />
-        <Text style = {styles.message}>{message}</Text>
+        <FormLabel color="darkblue" bg="white" text="Repeat Password" />
+        <TextInput style={styles.input}
+          value={repeatPassword}
+          onChangeText={(val) => setRepeatPassword(val)}
+        />
+        <Text style={styles.message}>{message}</Text>
         <TouchableOpacity onPress={handleButtonPress} style={styles.logInButton}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
@@ -68,9 +89,9 @@ const styles = StyleSheet.create(
   {
     mainView: {
       backgroundColor: "green",
-      alignItems:"center",
-      justifyContent:"center",
-      flex:1
+      alignItems: "center",
+      justifyContent: "center",
+      flex: 1
     },
 
 
